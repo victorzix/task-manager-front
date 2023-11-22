@@ -4,7 +4,7 @@ export const COLORS = {
   cream: "#f9fadc",
   darkBrown: '#2b2823',
   darkCream: '#d4ceaa',
-  ligthBlue: '#8fa691',
+  ligthBlue: '#cfcfcf',
   orange: '#cc3917'
 }
 
