@@ -3,6 +3,9 @@ import Header from '../Header';
 import { COLORS } from '../../globalStyles';
 import { FaUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useRef } from 'react';
+import ApiHandler from '../../api/ApiHandler';
+import { validateUser } from '../../utils/schemas/validationSchema';
 
 const FormWrapper = styled.div`
 	height: 100%;
@@ -39,9 +42,9 @@ const FormContainer = styled.div`
 		font-size: 1.3em;
 	}
 
-  a {
-    color: ${COLORS.bgOrange};
-  }
+	a {
+		color: ${COLORS.bgOrange};
+	}
 
 	@media (max-width: 1366px) {
 		height: 25em;
@@ -56,7 +59,7 @@ const FormContainer = styled.div`
 		}
 
 		p {
-			font-size: .9em;
+			font-size: 0.9em;
 		}
 	}
 `;
@@ -100,16 +103,16 @@ const Form = styled.form`
 		color: ${COLORS.textWhite};
 		border: 0;
 		border-radius: 0.4em;
-    transition: all ease-in-out 200ms;
-    cursor: pointer;
+		transition: all ease-in-out 200ms;
+		cursor: pointer;
 
-    &:hover {
-      transform: scale(1.1);
-      background-color: transparent;
-      color: ${COLORS.bgOrange};
-      border: 1px solid ${COLORS.bgOrange};
-      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    }
+		&:hover {
+			transform: scale(1.1);
+			background-color: transparent;
+			color: ${COLORS.bgOrange};
+			border: 1px solid ${COLORS.bgOrange};
+			box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		}
 	}
 
 	@media (max-width: 1366px) {
@@ -141,6 +144,31 @@ const Form = styled.form`
 `;
 
 export default function RegisterPage() {
+	const nameRef = useRef(null);
+	const emailRef = useRef(null);
+	const passwordRef = useRef(null);
+
+	async function handleRegister(e) {
+		e.preventDefault();
+		const user = {
+			name: nameRef.current.value,
+			email: emailRef.current.value,
+			password: passwordRef.current.value,
+		};
+
+    const validationErrors = validateUser(user);
+    console.log(validationErrors)
+    if(validationErrors) return
+		const response = await ApiHandler.register(user);
+		const refs = [nameRef, emailRef, passwordRef];
+		console.log(response)
+		if (response.status < 400) {
+			refs.forEach((element) => {
+				element.current.value = '';
+			});
+		}
+	}
+
 	return (
 		<>
 			<Header />
@@ -155,20 +183,22 @@ export default function RegisterPage() {
 						<div className="inputs">
 							<div className="nameInput">
 								<label htmlFor="name">Name</label>
-								<input type="text" name="name" />
+								<input type="text" name="name" ref={nameRef} />
 							</div>
 							<div className="emailInput">
 								<label htmlFor="email">Email</label>
-								<input type="text" name="email" />
+								<input type="email" name="email" ref={emailRef} />
 							</div>
 							<div className="passwordInput">
 								<label htmlFor="password">Password</label>
-								<input type="text" name="password" />
+								<input type="password" name="password" ref={passwordRef} />
 							</div>
 						</div>
-						<button>Register</button>
+						<button onClick={handleRegister}>Register</button>
 					</Form>
-        <p>Already have an account? <Link to="/login">Log in</Link></p>
+					<p>
+						Already have an account? <Link to="/login">Log in</Link>
+					</p>
 				</FormContainer>
 			</FormWrapper>
 		</>
