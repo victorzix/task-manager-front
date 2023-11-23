@@ -1,4 +1,4 @@
-import Header from "./Header";
+import Header from "../Header";
 import Intro from "./Intro";
 
 export default function HomePage() {
