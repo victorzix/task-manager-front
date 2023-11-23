@@ -1,9 +1,11 @@
-import HomePage from "./components/Homepage/HomePage"
+// import HomePage from "./components/Homepage/HomePage"
+import LoginPage from "./components/LoginPage/LoginPage"
 
 function App() {
   return (
     <>
-      <HomePage/>
+      {/* <HomePage/> */}
+      <LoginPage/>
     </>
   )
 }
