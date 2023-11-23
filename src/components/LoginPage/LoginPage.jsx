@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Header from '../Homepage/Header';
+import Header from '../Header';
 import { COLORS } from '../../globalStyles';
 import { FaUserCircle } from 'react-icons/fa';
 
@@ -41,6 +41,23 @@ const FormContainer = styled.div`
   a {
     color: ${COLORS.bgOrange};
   }
+
+	@media (max-width: 1366px) {
+		height: 25em;
+		width: 20em;
+
+		.top {
+			height: 6em;
+		}
+
+		h3 {
+			font-size: 1em;
+		}
+
+		p {
+			font-size: .9em;
+		}
+	}
 `;
 
 const Form = styled.form`
@@ -82,9 +99,45 @@ const Form = styled.form`
 		color: ${COLORS.textWhite};
 		border: 0;
 		border-radius: 0.4em;
+
+		transition: all ease-in-out 200ms;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.1);
+      background-color: transparent;
+      color: ${COLORS.bgOrange};
+      border: 1px solid ${COLORS.bgOrange};
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
 	}
 
- 
+	@media (max-width: 1366px) {
+		height: 20em;
+		gap: 2em;
+		width: 50%;
+
+		.inputs {
+			gap: 2em;
+
+			div {
+				gap: 0.2em;
+
+				input {
+					width: 18em;
+				}
+
+				label {
+					font-size: 0.7em;
+				}
+			}
+		}
+
+		button {
+			height: 2.4em;
+			width: 13em;
+		}
+	}
 `;
 
 export default function LoginPage() {
