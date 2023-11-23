@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { COLORS } from '../globalStyles';
+import { Link } from 'react-router-dom';
 
 const HeaderWrapper = styled.header`
 	width: 100vw;
@@ -33,9 +34,9 @@ export default function Header() {
 	return (
 		<>
 			<HeaderWrapper>
-				<span><a href="">Home</a></span>
-				<span><a href="">About the project</a></span>
-				<span><a href="">Contacts</a></span>
+				<span><Link to="/">Home</Link></span>
+				<span><Link to="/about">About the project</Link></span>
+				<span><Link to="/contacts">Contacts</Link></span>
 			</HeaderWrapper>
 		</>
 	);

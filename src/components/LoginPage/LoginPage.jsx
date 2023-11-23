@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Header from '../Header';
 import { COLORS } from '../../globalStyles';
 import { FaUserCircle } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const FormWrapper = styled.div`
 	height: 100%;
@@ -164,7 +165,7 @@ export default function LoginPage() {
 						</div>
 						<button>Login</button>
 					</Form>
-        <p>Not registered yet? <a href="">Register Now</a></p>
+        <p>Not registered yet? <Link to="/register">Register Now</Link></p>
 				</FormContainer>
 			</FormWrapper>
 		</>
