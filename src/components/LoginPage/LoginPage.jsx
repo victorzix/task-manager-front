@@ -3,6 +3,9 @@ import Header from '../Header';
 import { COLORS } from '../../globalStyles';
 import { FaUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useRef, useState } from 'react';
+import { loginSchema, validateSchema } from '../../utils/schemas/validationSchema';
+import ApiHandler from '../../api/ApiHandler';
 
 const FormWrapper = styled.div`
 	height: 100%;
@@ -14,6 +17,7 @@ const FormWrapper = styled.div`
 `;
 
 const FormContainer = styled.div`
+	z-index: 3;
 	background-color: ${COLORS.textWhite};
 	height: 35em;
 	width: 30em;
@@ -113,6 +117,21 @@ const Form = styled.form`
     }
 	}
 
+	.errorDiv {
+		position: absolute;
+		z-index: -2;
+
+		.error {
+			display: flex;
+			position: relative;
+			text-align: center;
+			align-self: center;
+			top: 3.4em;
+			font-size: 0.8em;
+			color: red;
+		}
+	}
+
 	@media (max-width: 1366px) {
 		height: 20em;
 		gap: 2em;
@@ -138,10 +157,57 @@ const Form = styled.form`
 			height: 2.4em;
 			width: 13em;
 		}
+
+		.errorDiv {
+		position: absolute;
+		z-index: -2;
+
+		.error {
+			display: flex;
+			position: relative;
+			text-align: center;
+			align-self: center;
+			top: 3.4em;
+			font-size: 0.7em;
+			color: red;
+		}
+	}
 	}
 `;
 
 export default function LoginPage() {
+	const email = useRef(null)
+	const password = useRef(null);
+
+	const [error, setError] = useState('')
+
+
+	async function handleLogin(e) {
+		e.preventDefault();
+
+		const user = {
+			email: email.current.value,
+			password: password.current.value
+		}
+
+		const validationErrors = validateSchema(user, loginSchema);
+
+		if(validationErrors) {
+				const errors = validationErrors[0].errors[0]
+				setError(errors)
+			return;
+		}
+
+		setError('')
+
+		const response = await ApiHandler.login(user);
+		console.log(response.status)
+		if(response.status >= 400) {
+				setError(response.errors)
+				return;
+			}
+	}
+
 	return (
 		<>
 			<Header />
@@ -156,14 +222,17 @@ export default function LoginPage() {
 						<div className="inputs">
 							<div className="emailInput">
 								<label htmlFor="email">Email</label>
-								<input type="text" name="email" />
+								<input type="text" name="email" ref={email}/>
 							</div>
 							<div className="passwordInput">
 								<label htmlFor="password">Password</label>
-								<input type="text" name="password" />
+								<input type="password" name="password" ref={password}/>
+								<div className="errorDiv">
+									<p className="error">{error}</p>
+								</div>
 							</div>
 						</div>
-						<button>Login</button>
+						<button onClick={handleLogin}>Login</button>
 					</Form>
         <p>Not registered yet? <Link to="/register">Register Now</Link></p>
 				</FormContainer>

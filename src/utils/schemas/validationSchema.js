@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-export const userSchema = yup.object().shape({
+export const registerSchema = yup.object().shape({
 	name: yup.string().required('Name is a required field'),
 	email: yup
 		.string()
@@ -9,9 +9,14 @@ export const userSchema = yup.object().shape({
 	password: yup.string().min(8, 'Password must have at least 8 characters'),
 });
 
-export function validateUser(user) {
+export const loginSchema = yup.object().shape({
+	email: yup.string().email('Invalid e-mail or password').required('Invalid e-mail or password'),
+	password: yup.string().required('Invalid e-mail or password')
+})
+
+export function validateSchema(user, schema) {
 	try {
-		userSchema.validateSync(user, { abortEarly: false });
+		schema.validateSync(user, { abortEarly: false });
 	} catch (e) {
 		return e.inner.map((err) => {
 			return {

@@ -5,7 +5,7 @@ import { FaUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import ApiHandler from '../../api/ApiHandler';
-import { validateUser } from '../../utils/schemas/validationSchema';
+import { registerSchema, validateSchema } from '../../utils/schemas/validationSchema';
 
 const FormWrapper = styled.div`
 	height: 100%;
@@ -156,6 +156,21 @@ const Form = styled.form`
 			height: 2.4em;
 			width: 13em;
 		}
+
+		.errorDiv {
+		position: absolute;
+		z-index: -2;
+
+		.error {
+			display: flex;
+			position: relative;
+			text-align: center;
+			align-self: center;
+			top: 3.4em;
+			font-size: 0.7em;
+			color: red;
+		}
+	}
 	}
 `;
 
@@ -179,7 +194,7 @@ export default function RegisterPage() {
 			password: password.current.value,
 		};
 
-		const validationErrors = validateUser(user);
+		const validationErrors = validateSchema(user, registerSchema);
 
 		if (validationErrors) {
 			if (validationErrors.length > 0) {
