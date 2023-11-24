@@ -3,7 +3,7 @@ import Header from '../Header';
 import { COLORS } from '../../globalStyles';
 import { FaUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import ApiHandler from '../../api/ApiHandler';
 import { validateUser } from '../../utils/schemas/validationSchema';
 
@@ -24,6 +24,7 @@ const FormContainer = styled.div`
 	flex-direction: column;
 	padding: 2em 2em;
 	align-items: center;
+	z-index: 3;
 
 	.top {
 		display: flex;
@@ -115,6 +116,21 @@ const Form = styled.form`
 		}
 	}
 
+	.errorDiv {
+		position: absolute;
+		z-index: -2;
+
+		.error {
+			display: flex;
+			position: relative;
+			text-align: center;
+			align-self: center;
+			top: 3.4em;
+			font-size: 0.8em;
+			color: red;
+		}
+	}
+
 	@media (max-width: 1366px) {
 		height: 20em;
 		gap: 2em;
@@ -144,29 +160,56 @@ const Form = styled.form`
 `;
 
 export default function RegisterPage() {
-	const nameRef = useRef(null);
-	const emailRef = useRef(null);
-	const passwordRef = useRef(null);
+	const name = useRef(null);
+	const email = useRef(null);
+	const password = useRef(null);
+
+	const [formErrors, setFormErrors] = useState({
+		name: '',
+		email: '',
+		password: '',
+	});
 
 	async function handleRegister(e) {
 		e.preventDefault();
+
 		const user = {
-			name: nameRef.current.value,
-			email: emailRef.current.value,
-			password: passwordRef.current.value,
+			name: name.current.value,
+			email: email.current.value,
+			password: password.current.value,
 		};
 
-    const validationErrors = validateUser(user);
-    console.log(validationErrors)
-    if(validationErrors) return
+		const validationErrors = validateUser(user);
+
+		if (validationErrors) {
+			if (validationErrors.length > 0) {
+				const newErrors = {};
+				validationErrors.forEach((error) => {
+					newErrors[error.path] = error.errors;
+				});
+				setFormErrors(newErrors);
+				return;
+			}
+		}
+
 		const response = await ApiHandler.register(user);
-		const refs = [nameRef, emailRef, passwordRef];
-		console.log(response)
 		if (response.status < 400) {
+			const refs = [name, email, password];
 			refs.forEach((element) => {
 				element.current.value = '';
 			});
 		}
+		if (response.status >= 400) {
+			setFormErrors({ ...formErrors, email: response.errors });
+			return
+		}
+
+		setFormErrors({
+			name: '',
+			email: '',
+			password: '',
+		});
+		return;
 	}
 
 	return (
@@ -183,15 +226,24 @@ export default function RegisterPage() {
 						<div className="inputs">
 							<div className="nameInput">
 								<label htmlFor="name">Name</label>
-								<input type="text" name="name" ref={nameRef} />
+								<input type="text" name="name" ref={name} />
+								<div className="errorDiv">
+									<p className="error">{formErrors.name}</p>
+								</div>
 							</div>
 							<div className="emailInput">
 								<label htmlFor="email">Email</label>
-								<input type="email" name="email" ref={emailRef} />
+								<input type="email" name="email" ref={email} />
+								<div className="errorDiv">
+									<p className="error">{formErrors.email}</p>
+								</div>
 							</div>
 							<div className="passwordInput">
 								<label htmlFor="password">Password</label>
-								<input type="password" name="password" ref={passwordRef} />
+								<input type="password" name="password" ref={password} />
+								<div className="errorDiv">
+									<p className="error">{formErrors.password}</p>
+								</div>
 							</div>
 						</div>
 						<button onClick={handleRegister}>Register</button>

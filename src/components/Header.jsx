@@ -10,7 +10,6 @@ const HeaderWrapper = styled.header`
   justify-content: center;
   gap: 6em;
   font-size: 1.2em;
-  font-family: 'Inter', sans-serif;
   font-weight: bold;
   padding: 4em 0em;
   

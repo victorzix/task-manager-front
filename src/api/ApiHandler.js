@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class ApiHandler {
-constructor(baseUrl = 'http://localhost:3000/') {
+constructor(baseUrl = 'http://localhost:3010/') {
   this.baseUrl = baseUrl;
 }
   async register(request) {
