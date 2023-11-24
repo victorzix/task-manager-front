@@ -4,7 +4,10 @@ import { COLORS } from '../../globalStyles';
 import { FaUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useRef, useState } from 'react';
-import { loginSchema, validateSchema } from '../../utils/schemas/validationSchema';
+import {
+	loginSchema,
+	validateSchema,
+} from '../../utils/schemas/validationSchema';
 import ApiHandler from '../../api/ApiHandler';
 
 const FormWrapper = styled.div`
@@ -43,9 +46,9 @@ const FormContainer = styled.div`
 		font-size: 1.3em;
 	}
 
-  a {
-    color: ${COLORS.bgOrange};
-  }
+	a {
+		color: ${COLORS.bgOrange};
+	}
 
 	@media (max-width: 1366px) {
 		height: 25em;
@@ -60,7 +63,7 @@ const FormContainer = styled.div`
 		}
 
 		p {
-			font-size: .9em;
+			font-size: 0.9em;
 		}
 	}
 `;
@@ -106,15 +109,15 @@ const Form = styled.form`
 		border-radius: 0.4em;
 
 		transition: all ease-in-out 200ms;
-    cursor: pointer;
+		cursor: pointer;
 
-    &:hover {
-      transform: scale(1.1);
-      background-color: transparent;
-      color: ${COLORS.bgOrange};
-      border: 1px solid ${COLORS.bgOrange};
-      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    }
+		&:hover {
+			transform: scale(1.1);
+			background-color: transparent;
+			color: ${COLORS.bgOrange};
+			border: 1px solid ${COLORS.bgOrange};
+			box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		}
 	}
 
 	.errorDiv {
@@ -159,53 +162,51 @@ const Form = styled.form`
 		}
 
 		.errorDiv {
-		position: absolute;
-		z-index: -2;
+			position: absolute;
+			z-index: -2;
 
-		.error {
-			display: flex;
-			position: relative;
-			text-align: center;
-			align-self: center;
-			top: 3.4em;
-			font-size: 0.7em;
-			color: red;
+			.error {
+				display: flex;
+				position: relative;
+				text-align: center;
+				align-self: center;
+				top: 3.4em;
+				font-size: 0.7em;
+				color: red;
+			}
 		}
-	}
 	}
 `;
 
 export default function LoginPage() {
-	const email = useRef(null)
+	const email = useRef(null);
 	const password = useRef(null);
 
-	const [error, setError] = useState('')
-
+	const [error, setError] = useState('');
 
 	async function handleLogin(e) {
 		e.preventDefault();
 
 		const user = {
 			email: email.current.value,
-			password: password.current.value
-		}
+			password: password.current.value,
+		};
 
 		const validationErrors = validateSchema(user, loginSchema);
 
-		if(validationErrors) {
-				const errors = validationErrors[0].errors[0]
-				setError(errors)
+		if (validationErrors) {
+			const errors = validationErrors[0].errors[0];
+			setError(errors);
 			return;
 		}
 
-		setError('')
+		setError('');
 
 		const response = await ApiHandler.login(user);
-		console.log(response.status)
-		if(response.status >= 400) {
-				setError(response.errors)
-				return;
-			}
+		if (response.status >= 400) {
+			setError(response.errors);
+			return;
+		}
 	}
 
 	return (
@@ -222,11 +223,11 @@ export default function LoginPage() {
 						<div className="inputs">
 							<div className="emailInput">
 								<label htmlFor="email">Email</label>
-								<input type="text" name="email" ref={email}/>
+								<input type="text" name="email" ref={email} />
 							</div>
 							<div className="passwordInput">
 								<label htmlFor="password">Password</label>
-								<input type="password" name="password" ref={password}/>
+								<input type="password" name="password" ref={password} />
 								<div className="errorDiv">
 									<p className="error">{error}</p>
 								</div>
@@ -234,7 +235,9 @@ export default function LoginPage() {
 						</div>
 						<button onClick={handleLogin}>Login</button>
 					</Form>
-        <p>Not registered yet? <Link to="/register">Register Now</Link></p>
+					<p>
+						Not registered yet? <Link to="/register">Register Now</Link>
+					</p>
 				</FormContainer>
 			</FormWrapper>
 		</>
