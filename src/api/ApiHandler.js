@@ -1,4 +1,5 @@
 import axios from "axios";
+import { isAuthenticated } from "../auth/auth";
 
 class ApiHandler {
 constructor(baseUrl = 'http://localhost:3010/') {
@@ -20,6 +21,21 @@ constructor(baseUrl = 'http://localhost:3010/') {
     const response = await axios.post(`${this.baseUrl}login`, {
       ...request
     }, { withCredentials: true }).then((response) => {
+      return response.data
+    }).catch((err) => {
+      return err.response.data
+    })
+
+    return response
+  }
+
+  async getData() {
+    const isLogged = isAuthenticated();
+    if (!isLogged) {
+      return
+    }
+
+    const response = await axios.get(`${this.baseUrl}user/data`, { withCredentials: true }).then((response) => {
       return response.data
     }).catch((err) => {
       return err.response.data

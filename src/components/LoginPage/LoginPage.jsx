@@ -1,14 +1,17 @@
+/* eslint-disable no-unused-vars */
 import styled from 'styled-components';
 import Header from '../Header';
 import { COLORS } from '../../globalStyles';
 import { FaUserCircle } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useRef, useState } from 'react';
 import {
 	loginSchema,
 	validateSchema,
 } from '../../utils/schemas/validationSchema';
 import ApiHandler from '../../api/ApiHandler';
+import { isAuthenticated } from '../../auth/auth';
+
 
 const FormWrapper = styled.div`
 	height: 100%;
@@ -181,8 +184,10 @@ const Form = styled.form`
 export default function LoginPage() {
 	const email = useRef(null);
 	const password = useRef(null);
-
 	const [error, setError] = useState('');
+	const navigate = useNavigate();
+
+	const isLogged = isAuthenticated();
 
 	async function handleLogin(e) {
 		e.preventDefault();
@@ -193,20 +198,26 @@ export default function LoginPage() {
 		};
 
 		const validationErrors = validateSchema(user, loginSchema);
-
+		
 		if (validationErrors) {
 			const errors = validationErrors[0].errors[0];
 			setError(errors);
 			return;
 		}
-
+		
 		setError('');
-
+		
 		const response = await ApiHandler.login(user);
 		if (response.status >= 400) {
 			setError(response.errors);
 			return;
 		}
+		
+		navigate('/dashboard')
+	}
+	
+	if(isLogged) {
+		return <Navigate to='/dashboard'/>
 	}
 
 	return (
